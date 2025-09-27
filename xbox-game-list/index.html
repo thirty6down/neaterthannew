@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xbox Game Collection</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('images/background.png') center center fixed;
+            background-size: cover;
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Container and layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            min-height: 100vh;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Header styles */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 3px solid #107c10;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #77bb44;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: end;
+            margin-top: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #77bb44;
+            font-size: 0.9rem;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 2px solid #107c10;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #000000;
+            font-size: 1rem;
+            min-width: 150px;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #2ca243;
+            box-shadow: 0 0 10px rgba(44, 162, 67, 0.3);
+        }
+
+        /* Stats */
+        .stats {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            color: #77bb44;
+            font-weight: 600;
+        }
+
+        /* Table container with responsive columns */
+        .table-container {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .table-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 2px solid #107c10;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #000000;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #107c10, #2ca243);
+            color: #ffffff;
+        }
+
+        thead th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background-color: rgba(119, 187, 68, 0.1);
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: rgba(240, 240, 240, 0.5);
+        }
+
+        tbody td {
+            padding: 12px;
+            vertical-align: middle;
+            font-size: 0.95rem;
+        }
+
+        /* Region flag styling */
+        .region-flag {
+            width: 24px;
+            height: 16px;
+            object-fit: cover;
+            border-radius: 2px;
+            margin-right: 8px;
+            vertical-align: middle;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .region-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Type badges */
+        .type-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .type-retail {
+            background: linear-gradient(135deg, #107c10, #2ca243);
+            color: #ffffff;
+        }
+
+        .type-homebrew {
+            background: linear-gradient(135deg, #77bb44, #2ca243);
+            color: #ffffff;
+        }
+
+        /* Responsive design */
+        @media (min-width: 1200px) {
+            .table-container {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .filter-group {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .filter-group select,
+            .filter-group input {
+                min-width: 100%;
+            }
+
+            thead th,
+            tbody td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+
+            .region-flag {
+                width: 20px;
+                height: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            thead th:nth-child(3),
+            tbody td:nth-child(3) {
+                display: none;
+            }
+
+            thead th,
+            tbody td {
+                padding: 8px 6px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Loading and empty states */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #ffffff;
+            font-size: 1.1rem;
+            background: rgba(119, 187, 68, 0.1);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Xbox Game Collection</h1>
+            <div class="controls">
+                <div class="filter-group">
+                    <label for="gameType">Game Type:</label>
+                    <select id="gameType">
+                        <option value="all">All Games</option>
+                        <option value="retail">Retail Games</option>
+                        <option value="homebrew">Homebrew Games</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="regionFilter">Region:</label>
+                    <select id="regionFilter">
+                        <option value="all">All Regions</option>
+                        <option value="USA">USA</option>
+                        <option value="PAL">PAL</option>
+                        <option value="JPN">JPN</option>
+                        <option value="GLO">GLO</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="searchInput">Search:</label>
+                    <input type="text" id="searchInput" placeholder="Search games...">
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="stats">
+                <span id="gameCount">Loading games...</span>
+            </div>
+
+            <div class="table-container" id="tableContainer">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Game Title</th>
+                                <th>Region</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gamesTableBody">
+                            <!-- Games will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Embedded game data
+        const retailGamesData = `007 - Agent Under Fire,USA
+007 - Everything Or Nothing,USA
+007 - From Russia With Love,USA
+007 - Nightfire,USA
+187 - Ride Or Die,GLO
+2002 Fifa World Cup,USA
+25 To Life,USA-JPN
+4X4 Evo 2,USA
+50 Cent - Bulletproof,GLO
+Advent Rising,USA
+Aeon Flux,USA-JPN
+Aggressive Inline,USA
+Airforce Delta Storm,USA
+Alias,USA
+Alien Hominid,PAL
+Aliens Vs Predator - Extinction,USA
+All-Star Baseball 2005 Ft D.J,USA
+Alter Echo,USA
+American Chopper 2 - Full Throttle,GLO
+American Chopper,GLO
+American Mcgee Presents Scrapland,GLO
+America's Army - Rise Of A Soldier,USA
+AMF Bowling 2004,USA
+AMF Xtreme Bowling 2006,USA
+Amped 2,USA
+Amped - Freestyle Snowboarding,USA
+And 1 Streetball,GLO
+Angelic Concert,JPN
+Animaniacs - The Great Edgar Hunt,PAL
+Antz Extreme Racing,USA
+Aoi Namida,JPN
+Apex,USA
+Aquaman - Battle For Atlantis,USA
+Arctic Thunder,USA
+Area 51,USA
+Arena Football,USA
+Armed And Dangerous,USA
+Army Men - Major Malfunction,GLO
+Army Men - Sarge's War,USA
+Arx Fatalis,USA-PAL
+Atari Anthology,GLO
+Atv - Quad Power Racing 2,USA
+Auto Modellista,GLO
+Avatar - The Last Airbender,USA-JPN
+Azurik - Rise Of Perathia,USA
+Backyard Wrestling 2 - T.G.T.N,USA-JPN
+Backyard Wrestling - D.T.T.A.H,USA-JPN
+Bad Boys II,PAL
+Bad Boys - Miami Takedown,USA
+Baldur's Gate - D.A II,USA-JPN
+Baldur's Gate - Dark Alliance,USA
+Barbarian,PAL
+Barbie Horse Adventures - W.H,USA-JPN
+Batman Begins,USA
+Batman - Dark Tomorrow,USA
+Batman - Rise Of Sin Tzu,USA-JPN
+Batman - Vengeance,USA
+Battle Engine Aquila,USA
+Battlefield 2 - Modern Combat,USA
+Battlestar Galactica,USA-JPN
+Beat Down - Fists Of Vengeance,USA
+Beyond Good & Evil,USA-JPN
+Bicycle Casino Inc - Texas Hold'em,GLO
+Big Bumpin',USA
+Big Mutha Truckers 2,USA
+Big Mutha Truckers,USA
+Bionicle,USA
+Bistro Cupid 2,JPN
+Bistro Cupid,JPN
+Black Stone - Magic & Steel,USA-PAL
+Black,USA
+Blade II,USA
+Blazing Angels - Squadrons Of WwII,GLO
+Blinx 2 - Masters Of Time & Space,GLO
+Blinx - The Time Sweeper,USA
+Blitz - The League,USA
+Blood Omen 2 - T.L.O.K.S,USA
+Bloodrayne 2,USA
+Bloodrayne,USA
+Blood Wake,USA
+Bloody Roar - Extreme,USA
+Blowout,USA
+Bmx Xxx,USA
+B.P.S - Trophy Bass 2007,GLO
+B.P.S - Trophy Hunter 2007,GLO
+Braveknight - Leverant Eiyuuden,JPN
+Breakdown,USA
+Break Nine - World Billiards,JPN
+Breeders' Cup - W.T.C,USA
+Brian Lara Int'l Cricket 2005,PAL
+Broken Sword - The Sleeping Dragon,USA
+Brothers In Arms - Earned In Blood,GLO
+Brothers In Arms - Road To Hill 30,GLO
+Bruce Lee - Quest Of The Dragon,USA
+Brute Force,USA
+Buffy The Vampire Slayer,USA
+Buffy T.V.S - Chaos Bleeds,USA-JPN
+Burnout 2 - Point Of Impact,USA
+Burnout 3 - Takedown,USA
+Burnout Revenge,USA
+Burnout,USA
+Cabela's Big Game Hunter 2005 Adv,GLO
+Cabela's Dangerous Hunts 2,GLO
+Cabela's Dangerous Hunts,USA
+Cabela's Deer Hunt - 2004 Season,USA
+Cabela's Deer Hunt - 2005 Season,GLO
+Cabela's Outdoor Adventures,GLO
+Call Of Cthulhu - D.C.O.T.E,USA
+Call Of Duty 2 - Big Red One C.E,GLO
+Call Of Duty 3,GLO
+Call Of Duty - Finest Hour,GLO
+Capcom Classics Coll Vol. 1,GLO
+Capcom Classics Coll Vol. 2,USA-JPN
+Capcom Fighting Jam,GLO
+Capcom Vs. Snk 2 Eo,USA
+Carmen Sandiego - T.S.O.T.S.D,USA
+Cars,USA-JPN
+Carve,USA-PAL
+Castlevania - C.O.D,USA-JPN
+C.A.T - Cyber Attack Team,JPN
+Catwoman,USA
+Cel Damage,USA
+Championship Bowling,USA
+Championship Manager 2006,PAL
+Championship Manager 5,PAL
+Championship Manager - S 01-02,PAL
+Championship Manager - S 02-03,PAL
+Charlie And The Chocolate Factory,USA
+Chase - Hollywood Stunt Driver,USA
+Chessmaster,USA
+Chicago Enforcer,USA
+Chicken Little,GLO
+Circus Maximus - Chariot Wars,USA
+Classified - The Sentinel Crisis,GLO
+Close Combat - First To Fight,USA
+Club Football 2005 - Ac Milan,PAL
+Club Football 2005 - AFC Ajax,PAL
+Club Football 2005 - Arsenal,PAL
+Club Football 2005 - Aston Villa,PAL
+Club Football 2005 - Birmingham,PAL
+Club Football 2005 - Bvb,PAL
+Club Football 2005 - Celtic FC,PAL
+Club Football 2005 - Chelsea FC,PAL
+Club Football 2005 - FC Barcelona,PAL
+Club Football 2005 - FC Bayern,PAL
+Club Football 2005 - FC Inter,PAL
+Club Football 2005 - Hamburger Sv,PAL
+Club Football 2005 - Juventus,PAL
+Club Football 2005 - Liverpool FC,PAL
+Club Football 2005 - Man Utd,PAL
+Club Football 2005 - Marseille,PAL
+Club Football 2005 - Newcastle Utd,PAL
+Club Football 2005 - Psg,PAL
+Club Football 2005 - Rangers FC,PAL
+Club Football 2005 - Real Madrid,PAL
+Club Football 2005 - Tottenham,PAL
+Codename - Kids Next Door,USA
+Cold Fear,GLO
+Cold War,USA
+Colin McRae Rally 04,USA
+Colin McRae Rally 2005,USA
+Colin McRae Rally 3,USA
+College Hoops 2K6,USA
+College Hoops 2K7,USA
+Combat Elite - WwII Paratroopers,USA
+Combat - Task Force 121,USA
+Commandos 2 - Men Of Courage,USA
+Commandos - Strike Force,GLO
+Conan,PAL
+Conflict - Desert Storm II,USA
+Conflict - Desert Storm,USA
+Conflict - Global Terror,USA
+Conflict - Vietnam,USA
+Conker - Live & Reloaded,USA
+Conspiracy - W.O.M.D,PAL
+Constantine,USA-JPN
+Corvette,USA
+Counter-Strike,USA-JPN
+Crash Bandicoot - T.W.O.C,USA
+Crash 'N' Burn,GLO
+Crash Nitro Kart,USA-JPN
+Crash,PAL
+Crash Tag Team Racing,GLO
+Crash Twinsanity,GLO
+Crazy Taxi 3 - High Roller,USA
+Cricket 2005,PAL
+Crime Life - Gang Wars,USA
+Crimson Sea,USA
+Crimson Skies - H.R.T.R,USA
+Crouching Tiger Hidden Dragon,USA-JPN
+Crusty Demons,USA
+Csi - Crime Scene Investigation,GLO
+C.T Special Forces - F.F.E,GLO
+Curious George,USA
+Curse - The Eye Of Isis,USA
+Dai Senryaku VII - M.M.T,USA
+Dakar 2 - T.W.U.R,USA
+Dance Dance Revolution Ultramix 2,PAL
+Dance Dance Revolution Ultramix 2,USA
+Dance Dance Revolution Ultramix 3,PAL
+Dance Dance Revolution Ultramix 3,USA
+Dance Dance Revolution Ultramix 4,USA
+Dance Dance Revolution Ultramix,USA
+Dance-Uk,PAL
+Dancing Stage Unleashed,PAL
+Dark Summit,USA
+Darkwatch,USA
+Dave Mirra Freestyle Bmx 2,USA
+David Beckham Soccer,PAL
+Dead Man's Hand,USA-JPN
+Dead Or Alive 1 Ultimate,USA-JPN
+Dead Or Alive 2 Ultimate,USA-JPN
+Dead Or Alive 3,USA
+Dead To Rights II,USA
+Dead To Rights,USA
+Deathrow,USA
+Defender,USA
+Def Jam - Fight For Ny,USA
+Delta Force - Black Hawk Down,GLO
+Dennou Taisen - Dronez,JPN
+Destroy All Humans! 2,GLO
+Destroy All Humans!,USA-JPN
+Deus Ex - Invisible War,USA-JPN
+Die Hard - Vendetta,PAL
+Digimon Rumble Arena 2,USA
+Digimon World 4,USA
+Dino Crisis 3,USA-JPN
+Dinosaur Hunting - U.D,JPN
+Dinotopia - The Sunstone Odyssey,USA
+Disney's Extreme Skate Adventure,USA
+D.O.A Xtreme Beach Volleyball,USA
+Doom 3 L.C.E,GLO
+Doom 3 - Resurrection Of Evil,GLO
+Double-S.T.E.A.L,JPN
+Double-S.T.E.A.L - The 2Nd Clash,JPN
+Dragon Ball Z - Sagas,USA
+Dragon's Lair 3D - R.T.T.L,USA
+Drake Of The 99 Dragons,USA
+Dreamfall - T.L.J,USA-JPN
+Dreamworks Madagascar,USA-PAL
+Dreamworks Over The Hedge,GLO
+Dreamworks Shark Tale,GLO
+Dreamworks Shrek - Superslam,GLO
+Drihoo,JPN
+Driv3r,GLO
+Driver - Parallel Lines,GLO
+Dr. Muto,USA
+Dr. Seuss' The Cat In The Hat,USA-JPN
+Dungeons & Dragons - Heroes,USA-JPN
+Dynasty Warriors 3,JPN
+Dynasty Warriors 3,USA
+Dynasty Warriors 4,JPN
+Dynasty Warriors 4,USA-JPN
+Dynasty Warriors 5,USA-JPN
+Ed Edd N Eddy - The Mis-Edventures,USA
+Egg Mania - Eggstreme Madness,USA
+Enclave,USA
+England Int'l Football - 2004 Ed.,PAL
+Enter The Matrix,USA
+Eragon,GLO
+Espn Baseball 2K4,USA
+Espn College Hoops 2K5,USA
+Espn College Hoops,USA
+Espn Int'l Winter Sports 2002,USA
+Espn Mls Extratime 2002,USA
+Espn Nba 2K5,USA
+Espn Nba 2Night 2002,USA
+Espn Nba Basketball,USA
+Espn Nfl 2K5,USA
+Espn Nfl Football 2K4,USA
+Espn Nfl Primetime 2002,USA
+Espn Nhl 2K5,USA
+Espn Nhl Hockey,USA
+Evil Dead - A.F.O.B,USA-PAL
+Evil Dead - Regeneration,USA-JPN
+Exaskeleton,JPN
+Ex-Chaser,JPN
+F1 2002,PAL
+F1 Career Challenge,PAL
+Fable - The Lost Chapters,USA
+Fable,USA-PAL
+Fallout - B.O.S,USA-JPN
+Family Guy - Video Game!,USA-PAL
+Fantastic 4,GLO
+Far Cry Instincts - Evolution,GLO
+Far Cry Instincts,GLO
+Fatal Frame II - C.B - D.C,USA-JPN
+Fatal Frame,USA
+Fifa Soccer 06,USA
+Fifa Soccer 07,USA
+Fifa Soccer 2003,USA
+Fifa Soccer 2004,USA
+Fifa Soccer 2005,USA
+Fifa Street 2,USA
+Fifa Street,USA
+Fifa World Cup Germany 2006,USA
+Fight Club,GLO
+Fight Night 2004,USA
+Fight Night Round 2,USA
+Fight Night Round 3,USA
+Fila World Tour Tennis,PAL
+Final Fight - Streetwise,USA
+Finding Nemo,USA
+Fireblade,USA
+Flatout 2,GLO
+Flatout,USA-JPN
+Flight Academy,JPN
+Ford Mustang - The Legend Lives,USA
+Ford Racing 2,USA
+Ford Racing 3,USA
+Ford Street Racing,GLO
+Ford Vs. Chevy,USA
+Forgotten Realms - Demon Stone,USA-JPN
+Forza Motorsport,GLO
+Frankie Dettori Racing,PAL
+Freaky Flyers,USA
+Freedom Fighters,USA
+Freestyle Metal X,USA
+Frogger - Ancient Shadow,USA
+Frogger Beyond,USA
+Full Spectrum Warrior - T.H,USA-JPN
+Full Spectrum Warrior,USA-JPN
+Furious Karting,USA
+Futurama,USA
+Future Tactics - The Uprising,USA
+Fuzion Frenzy,USA
+Galaxy Angel,JPN
+Galleon,USA-JPN
+Gauntlet - Dark Legacy,USA
+Gauntlet - Seven Sorrows,USA
+Gene Troopers,GLO
+Genma Onimusha,USA
+Ghost Master - T.G.C,PAL
+Gladiator - Sword Of Vengeance,USA
+Gladius,USA
+Goblin Commander - U.T.H,USA
+Godzilla - D.O.M Melee,GLO
+Godzilla - Save The Earth,GLO
+Goldeneye - Rogue Agent,USA
+Gotcha!,PAL
+Grabbed By The Ghoulies,USA
+Grand Theft Auto III,USA
+Grand Theft Auto - San Andreas,USA
+Grand Theft Auto - Vice City,USA
+Gravity Games Bike - S.V.D,USA
+Greg Hastings' Tournament P. Max'd,GLO
+Greg Hastings' Tourney Paintball,GLO
+Grooverider - Slot Car Thunder,USA
+Group S Challenge,USA-JPN
+Guilty Gear Isuka,JPN
+Guilty Gear X2 #Reload - T.M.C,USA
+Gui Yi - Daemon Vector,JPN
+Gun,GLO
+Gungriffon - Allied Strike,USA-JPN
+Gun Metal,USA
+Gun Valkyrie,USA
+Half-Life 2,GLO
+Halo 2,GLO
+Halo 2 Multiplayer Map Pack,GLO
+Halo - Combat Evolved,USA
+Harry Potter And The C.O.S,USA
+Harry Potter And The G.O.F,USA
+Harry Potter And The P.O.A,USA
+Harry Potter And The S.S,USA
+Harry Potter - Quidditch World Cup,USA
+Headhunter - Redemption,USA-PAL
+Hello Kitty - Roller Rescue,PAL
+Heroes Of The Pacific,USA
+High Heat M.L.B 2004,USA
+High Rollers Casino,USA
+Hitman 2 - Silent Assassin,USA
+Hitman - Blood Money,GLO
+Hitman - Contracts,USA
+Hot Wheels - S.T.C,USA-JPN
+Hulk,USA
+Hummer Badlands,USA
+Hunter - The Reckoning,USA
+Hunter - T.R - Redeemer,USA-JPN
+Hyper Sports 2002 Winter,JPN
+Ice Age 2 - The Meltdown,GLO
+IHRA Drag Racing - Sportsman Ed.,USA
+IHRA Professional Drag Racing 2005,USA
+Indiana Jones - The Emperor's Tomb,USA
+Indigo Prophecy,USA-JPN
+Indycar Series 2005,USA
+Indycar Series,USA
+I-Ninja,USA
+Innocent Tears,JPN
+Inside Pitch 2003,USA
+Intellivision Lives!,USA
+International Superstar Soccer 2,PAL
+Iron Phoenix,GLO
+Jacked,PAL
+Jade Empire,USA-PAL
+James Cameron's Dark Angel,USA
+Jaws Unleashed,USA
+Jikkyou World Soccer 2002,JPN
+Jockey's Road,JPN
+JSRF - Jet Set Radio Future,USA
+Judge Dredd - Dredd Vs. Death,USA
+Juiced,GLO
+Jurassic Park - Op Genesis,USA-JPN
+Just Cause,GLO
+Justice League Heroes,USA-PAL
+Kabuki Warriors,USA
+Kakuto Chojin,USA
+Kao The Kangaroo - Round 2,PAL
+Karaoke Revolution Party,USA
+Karaoke Revolution,USA
+Kelly Slater's Pro Surfer,USA
+Kikou Heidan J-Phoenix Plus,JPN
+Kill Switch,USA
+King Arthur,USA
+Kingdom Under Fire - Heroes,GLO
+Kingdom Under Fire - T.C,USA-JPN
+Knights Of The Temple - I.C,PAL
+Knights Of The Temple II,GLO
+Knockout Kings 2002,USA
+Kof - Maximum Impact - Maniax,USA
+Kung Fu Chaos,USA-JPN
+Land Of The Dead - R.T.F.G,GLO
+Lara Croft Tomb Raider - Legend,GLO
+Largo Winch - Empire Under Threat,PAL
+L.A. Rush,USA-PAL
+Legacy Of Kain - Defiance,USA
+Legends Of Wrestling II,USA
+Legends Of Wrestling,USA
+Lego Star Wars II - T.O.T,USA-PAL
+Lego Star Wars - The Video Game,USA
+Leisure Suit Larry - M.C.L,USA-JPN
+Lemony Snicket's - A.S.O.U.E,USA
+Le Tour De France,PAL
+Links 2004,USA
+LMA Manager 2006,PAL
+Loons - The Fight For Fame,USA
+MA 2 - LW and OutRun 2,GLO
+Mace Griffin - Bounty Hunter,USA-JPN
+Mad Dash Racing,USA
+Madden Nfl 06,USA
+Madden Nfl 07,USA
+Madden Nfl 08,USA
+Madden Nfl 09,USA-JPN
+Mafia,USA
+Magatama,JPN
+Magic - T.G - Battlegrounds,GLO
+Magi Death Fight!,JPN
+Major League Baseball 2K7,USA
+Malice,USA
+Manchester United Manager 2005,PAL
+Manhunt,USA
+Marc Ecko's Getting Up - C.U.P,GLO
+Marvel Nemesis - R.O.T.I,USA
+Marvel - Ultimate Alliance,GLO
+Marvel Vs. Capcom 2 - N.A.O.H,JPN
+Marvel Vs. Capcom 2 - N.A.O.H,PAL
+Marvel Vs. Capcom 2 - N.A.O.H,USA
+Mashed - Drive To Survive,PAL
+Mashed - Fully Loaded,PAL
+Mat Hoffman's Pro Bmx 2,USA
+Maximum Chase,USA
+Max Payne 2 - T.F.O.M.P,USA
+Max Payne,USA
+Mechassault 2 - Lone Wolf,GLO
+Mechassault,USA-PAL
+Medal Of Honor - European Assault,USA
+Medal Of Honor - Frontline,USA
+Medal Of Honor - Rising Sun,USA
+Mega Man Anniversary Collection,USA
+Memorick - Knights Apprentice,USA-PAL
+Men Of Valor,USA-JPN
+Mercenaries,GLO
+Metal Arms - G.I.T.S,USA-JPN
+Metal Dungeon,USA
+Metal Gear Solid 2 - Substance,USA
+Metal Slug 3,USA-JPN
+Metal Slug 4,USA-PAL
+Metal Slug 5,GLO
+Metal Wolf Chaos,JPN
+Miami Vice,PAL
+Micro Machines,PAL
+Midnight Club 3 - Dub Ed Remix,USA
+Midnight Club II,USA
+Midtown Madness 3,USA
+Midway Arcade Treasures 2,USA-PAL
+Midway Arcade Treasures 3,USA-PAL
+Midway Arcade Treasures,USA-PAL
+Mike Tyson Heavyweight Boxing,USA
+Minority Report - Everybody Runs,USA
+Mission Impossible - Op Surma,USA-JPN
+Mlb Slugfest 2006,USA
+Mlb Slugfest - Loaded,USA
+Mojo!,USA
+Monopoly Party,USA
+Monster 4X4 - World Circuit,USA
+Monster Garage,USA
+Mortal Kombat - Armageddon,USA
+Mortal Kombat - Deadly Alliance,USA
+Mortal Kombat - Deception,USA
+Mortal Kombat - Shaolin Monks,USA-PAL
+Motocross Mania 3,USA-PAL
+Motogp 2,USA
+Motogp - Ultimate Racing Tech 3,GLO
+Motogp,USA
+Motor Trend's Lotus Challenge,USA
+MTV Celebrity Deathmatch,USA
+MTV Music Generator 3,USA
+Mtx Mototrax,USA-JPN
+Murakumo - Renegade Mech Pursuit,USA
+Muzzle Flash,JPN
+Mvp Baseball 2005,USA
+Mx 2002 Featuring Ricky Carmichael,USA
+Mx Superfly,USA
+Mx Unleashed,USA-JPN
+Mx Vs. Atv Unleashed,USA-JPN
+Mx World Tour Ft J.L,USA
+Myst III - Exile,USA
+Myst Iv - Revelation,GLO
+Nakajima Tetsuya No Othelo Seminar,JPN
+Namco Museum 50Th Anniversary,USA
+Namco Museum,USA
+Narc,USA
+Nascar 06 - Total Team Control,USA
+Nascar 07,USA
+Nascar 2005 - Chase For The Cup,USA
+Nascar Heat 2002,USA
+Nascar Thunder 2002,USA
+Nascar Thunder 2003,USA
+Nascar Thunder 2004,USA
+NBA 2K7,GLO
+NBA Ballers - Phenom,GLO
+NBA Ballers - Phenom,USA
+NBA Ballers,USA
+NBA Inside Drive 2002,USA
+NBA Inside Drive 2003,USA
+NBA Inside Drive 2004,USA-JPN
+NBA Jam,USA
+NBA Live 07,USA
+NBA Starting Five,USA
+NBA Street V3,USA
+NBA Street Vol. 2,USA
+Ncaa College Basketball 2K3,USA
+Ncaa College Football 2K3,USA
+Ncaa Football 08,USA
+Ncaa March Madness 06,USA
+Need For Speed - Carbon,USA
+Need For Speed - Hot Pursuit 2,USA
+Need For Speed - Most Wanted - B.E,USA
+Need For Speed - Underground 2,USA
+Need For Speed - Underground,USA
+Neighbours From Hell,PAL
+New Legends,USA
+NFL 2K3,USA
+NFL Blitz Pro,USA
+NFL Fever 2004,USA
+NFL Head Coach,USA
+NFL Street 2,USA
+NFL Street,USA
+NHL 06,USA
+NHL 07,USA
+NHL 2005,USA
+NHL 2K7,GLO
+NHL Hitz 2002,USA
+NHL Hitz 2003,USA
+NHL Hitz Pro,USA
+NHL Rivals 2004,USA-JPN
+Nickelodeon Party Blast,USA
+Nickelodeon Tak 2 - T.S.O.D,USA-JPN
+Nickelodeon Tak - T.G.J.C,USA-JPN
+Night Caster - Defeat The Darkness,USA
+Night Caster II - Equinox,USA
+Ninja Gaiden Black,USA
+Ninja Gaiden,USA-JPN
+Nobunaga No Yabou - Ranseiki,JPN
+N. Spongebob Squarepants - B.F.B.B,USA
+N. Spongebob Squarepants - L.C,USA-JPN
+N. Spongebob Squarepants - T.M,USA-JPN
+N.U.D.E.@,JPN
+Obscure,USA
+Oddworld - Munch's Oddysee,USA
+Oddworld - Stranger's Wrath,USA
+Open Season,GLO
+Operation Flashpoint - Elite,GLO
+Otogi 2 - Immortal Warriors,USA
+Otogi - Myth Of Demons,USA
+Outlaw Golf 2,USA
+Outlaw Golf - 9 Holes of X-Mas,USA
+Outlaw Golf - Holiday Golf,USA
+Outlaw Golf,USA
+Outlaw Tennis,USA
+Outlaw Volleyball - Red Hot,USA
+Outlaw Volleyball,USA
+Outrun 2006 - Coast 2 Coast,GLO
+Outrun 2,USA
+Pac-Man World 2,USA
+Pac-Man World 3,USA
+Painkiller - Hell Wars,USA
+Panzer Dragoon Orta,USA
+Panzer Elite Action - F.O.G,PAL
+Pariah,GLO
+Peter Jackson's King Kong - T.O.G,GLO
+Petit Copter,JPN
+Phantasy Star Online Ep I & II,USA
+Phantom Crash,USA
+Phantom Dust,USA
+Pilot Down - Behind Enemy Lines,PAL
+Pinball Hall Of Fame - T.G.C,USA
+Pirates Of The Caribbean,USA
+Pirates - The Legend Of Black Kat,USA
+Pitfall - The Lost Expedition,USA
+Playboy - The Mansion,USA
+Plus Plum 2,JPN
+Pocketbike Racer,USA
+Pool-Shark 2,PAL
+Power Drome,USA
+Predator - Concrete Jungle,GLO
+Prince Of Persia - The Two Thrones,GLO
+Prince Of Persia - T.S.O.T,USA-JPN
+Prince Of Persia - Warrior Within,GLO
+Prisoner Of War,USA
+Pro Cast - Sports Fishing Game,USA
+Pro Evolution Soccer 4,PAL
+Pro Evolution Soccer 5,PAL
+Pro Fishing Challenge,USA
+Project Gotham Racing 2,USA-JPN
+Project Gotham Racing,USA
+Project - Snowblind,USA-JPN
+Pro Race Driver,USA
+Prostroke Golf - W.T 2007,USA-PAL
+Psi-Ops - The Mindgate Conspiracy,USA
+Psychonauts,USA
+Psyvariar 2 - Extend Edition,JPN
+Pulse Racer,USA
+Pump It Up - Exceed,USA
+Pure Pinball,USA
+Puyo Pop Fever,PAL
+Quantum Redshift,USA
+Rallisport Challenge 2,GLO
+Rallisport Challenge,USA
+Rally Fusion - Race Of Champions,USA
+Rapala Pro Fishing,GLO
+Ratatouille,USA
+Rayman 3 - Hoodlum Havoc,USA-JPN
+Rayman Arena,USA
+Raze's Hell,GLO
+Real World Golf,GLO
+Redcard 20-03,USA
+Red Dead Revolver,USA
+Red Faction II,USA
+Red Ninja - End Of Honor,GLO
+Red Star - The,GLO
+Reign Of Fire,USA
+Rent A Hero No. 1,JPN
+Reservoir Dogs,USA
+Richard Burns Rally,PAL
+Ricky Ponting Int'l Cricket 2005,PAL
+Rlh - Run Like Hell,USA
+Roadkill,USA
+Robin Hood - D.O.T.C,USA-JPN
+Robocop,USA
+Robotech - Battlecry,USA
+Robotech - Invasion,USA
+Robots,PAL
+Robots,USA-JPN
+Robot Wars - Extreme Destruction,PAL
+Rocky Legends,GLO
+Rocky,USA
+Rogue Ops,USA
+Rogue Trooper,GLO
+Rollercoaster Tycoon,USA-JPN
+Rolling,PAL
+Room Zoom - Race For Impact,USA
+R-Racing Evolution,USA
+R.T.C.W - Tides Of War,GLO
+Rugby 06,USA
+Rugby Challenge 2006,PAL
+Rugby League 2,PAL
+Rugby League,PAL
+Samurai Shodown V,GLO
+Samurai Warriors,USA
+Scaler,USA-PAL
+Scarface - The World Is Yours,GLO
+Scar - Squadra Corse Alfa Romeo,PAL
+Scooby-Doo! Mystery Mayhem,GLO
+Scooby-Doo! Night Of 100 Frights,USA
+Scooby-Doo! Unmasked,GLO
+Seablade,USA
+Seaworld Adventure Parks - S.D.S.A,GLO
+Second Sight,GLO
+Secret Weapons Over Normandy,USA
+Sega Gt 2002,USA
+Sega Gt Online,USA
+Sega Soccer Slam,USA
+Sensible Soccer 2006,PAL
+Sentou Yousei Yukikaze - Y.N,JPN
+Serious Sam II,USA-PAL
+Serious Sam,USA
+Shadow Of Memories,PAL
+Shadow Ops - Red Mercury,USA-JPN
+Shadow The Hedgehog,USA
+Shattered Union,USA
+Shellshock - Nam '67,GLO
+Shenmue II,USA
+Shikigami No Shiro Evolution,JPN
+Shikigami No Shiro II,JPN
+Shikigami No Shiro,JPN
+Shinchou Mahjong,JPN
+Shin Megami Tensei - Nine,JPN
+Showdown - Legends Of Wrestling,USA
+Shrek 2,USA-JPN
+Shrek Super Party,USA
+Shrek,USA
+Sid Meier's Pirates!,GLO
+Silent Hill 2 - Restless Dreams,USA
+Silent Hill 4 - The Room,USA-JPN
+Silent Scope Complete,USA
+Ski Racing 2005,PAL
+Ski Racing 2006,PAL
+Slam Tennis,PAL
+Smashing Drive,USA
+Sneakers,USA
+Sneak King,USA
+Sniper Elite,USA
+Snk Vs. Capcom - Svc Chaos,USA-JPN
+Soldier Of Fortune II - D.H,GLO
+Sonic Heroes,USA
+Sonic Mega Collection Plus,GLO
+Sonic Riders,USA
+Soulcalibur II,USA
+Spartan - Total Warrior,USA-JPN
+Spawn - Armageddon,USA
+Speed Kings,USA
+Sphinx And The Cursed Mummy,USA-JPN
+Spider-Man 2,GLO
+Spider-Man,USA
+Spikeout - Battle Street,USA
+Splashdown,USA
+Splat Magazine Renegade Paintball,GLO
+Spyhunter 2,USA
+Spyhunter - Nowhere To Run,USA
+Spyhunter,USA
+Spyro - A Hero's Tail,GLO
+Spy Vs. Spy,USA
+Srs - Street Racing Syndicate,USA
+Ssx 3,USA
+Ssx On Tour,USA
+Ssx Tricky,USA
+Stacked With Daniel Negreanu,USA
+Stake,GLO
+Starsky & Hutch,USA
+Star Trek - Shattered Universe,USA
+Star Wars - Battlefront,GLO
+Star Wars - Battlefront II,GLO
+Star Wars - Episode III - R.O.T.S,USA
+Star Wars - Jedi Starfighter,USA
+Star Wars - J.K II - Jedi Outcast,USA
+Star Wars - J.K- Jedi Academy,USA
+Star Wars - K.O.T.O.R II - T.S.L,USA
+Star Wars - K.O.T.O.R,USA
+Star Wars - Obi-Wan,USA
+Star Wars - Republic Commando,USA
+Star Wars - Starfighter S.E,USA
+Star Wars - The Clone Wars,USA
+State Of Emergency,USA
+Steel Battalion - Line Of Contact,GLO
+Steel Battalion,USA
+Still Life,USA
+Stolen,GLO
+Street Fighter Anniversary Coll,GLO
+Street Hoops,USA
+Strike Force Bowling,USA
+Stubbs The Zombie In R.W.A.P,USA-JPN
+Sudeki,GLO
+Super Bubble Pop,USA
+Superman Returns,USA
+Superman - The Man Of Steel,USA
+Super Monkey Ball Deluxe,USA
+Swat - Global Strike Team,USA-JPN
+S.W - T.C.W and Tetris W,USA
+Sx Superstar,USA
+Syberia II,GLO
+Syberia,USA-PAL
+Taito Legends 2,GLO
+Taito Legends,USA
+Takahashi Junko No Mahjong Seminar,JPN
+Tao Feng - Fist Of The Lotus,USA-JPN
+Taz - Wanted,USA
+T.C Ghost Recon 2,GLO
+T.C Ghost Recon 2 - Summit Strike,GLO
+T.C Ghost Recon - A.W,GLO
+T.C Ghost Recon - I.T,USA-JPN
+T.C Ghost Recon,USA
+T.C.O.R - Escape From B.B,USA-JPN
+T.C Rainbow Six 3 - Black Arrow,GLO
+T.C Rainbow Six 3,GLO
+T.C Rainbow Six - Critical Hour,GLO
+T.C Rainbow Six - Lockdown,GLO
+T.C Splinter Cell 2 - P.T,GLO
+T.C Splinter Cell - Chaos Theory,GLO
+T.C Splinter Cell - Double Agent,GLO
+T.C Splinter Cell,USA
+Tecmo Classic Arcade,USA-JPN
+Teenage Mutant Ninja Turtles,USA
+Teen Titans,GLO
+Tenchu 3 - Kaiki No Shou,JPN
+Tenchu - Return From Darkness,USA-JPN
+Tenerezza,JPN
+Tenku - Freestyle Snowboarding,JPN
+Tennis Masters Series 2003,USA
+Terminator 3 - R.O.T.M,GLO
+Terminator 3 - The Redemption,USA-JPN
+Test Drive - E.O.D,USA-JPN
+Test Drive Off-Road - Wide Open,USA
+Test Drive,USA
+Tetris Worlds Live,USA
+Tetris Worlds,USA
+The Bard's Tale,USA
+The Baseball 2002 - B.B.P.S,JPN
+The Bible Game,USA
+The Chronicles Of Narnia L.W.W,USA-JPN
+The Da Vinci Code,USA-PAL
+The Dukes Of Hazzard - R.O.G.L,USA-PAL
+The Elder Scrolls III - M.G.O.T.Y,USA
+The Elder Scrolls III - Morrowind,USA
+The Fairly Oddparents - B.D.R,USA
+The Godfather,USA
+The Great Escape,USA
+The Haunted Mansion,USA
+The Hobbit - T.P.T.L.O.T.R,USA-JPN
+The House Of The Dead III,USA
+The Hustle - Detroit Streets,GLO
+The Incredible Hulk - U.D,GLO
+The Incredibles - R.O.T.U,USA-JPN
+The Incredibles,USA-JPN
+The Italian Job,USA
+The King Of Fighters 2002,USA-PAL
+The King Of Fighters 2003,USA-JPN
+The King Of Fighters - Neowave,GLO
+The Legend Of Spyro - A.N.B,GLO
+The Lord Of The Rings -T.F.O.T.R,USA
+The Lord Of The Rings - T.R.O.T.K,USA
+The Lord Of The Rings - T.T.A,USA
+The Lord Of The Rings - T.T.T,USA
+The Matrix - Path Of Neo,USA-JPN
+The Punisher,USA-JPN
+The Simpsons - Hit & Run,USA-JPN
+The Simpsons - Road Rage,USA
+The Sims 2,USA
+The Sims - Bustin' Out,USA
+The Sims,USA
+The Suffering - Ties That Bind,USA-PAL
+The Suffering,USA
+The Terminator - Dawn Of Fate,USA
+The Thing,USA
+The Urbz - Sims In The City,USA
+The Warriors,USA
+The Wild Rings,JPN
+Thief - Deadly Shadows,USA-JPN
+Thousand Land,JPN
+Thrillville,GLO
+Tiger Woods Pga Tour 07,USA
+Tim B's T.N.B.C - Oogie's Revenge,USA
+Timesplitters 2,USA
+Timesplitters - Future Perfect,USA
+T.M.N.T 2 - Battle Nexus,USA
+T.M.N.T 3 - Mutant Nightmare,USA
+Tmnt - Mutant Melee,USA
+Toca Race Driver 2,USA
+Toca Race Driver 3,GLO
+Toca Race Driver Online Enabled,PAL
+Toca Race Driver,PAL
+Toejam & Earl III - M.T.E,USA
+Tom & Jerry In War Of The Whiskers,USA
+Tony Hawk's American Wasteland,GLO
+Tony Hawk's Project 8,GLO
+Tony Hawk's Pro Skater 2X,USA
+Tony Hawk's Pro Skater 3,USA
+Tony Hawk's Pro Skater 4,USA
+Tony Hawk's Underground 2,GLO
+Tony Hawk's Underground,USA-JPN
+Top Gear - Rpm Tuning,USA
+Top Spin,USA
+Torino 2006,GLO
+Tork - Prehistoric Punk,USA
+Total Club Manager 2004,PAL
+Total Club Manager 2005,PAL
+Totaled!,USA
+Total Immersion Racing,USA
+Total Overdose,GLO
+Touge R,JPN
+Toxic Grind,USA
+Transworld Snowboarding,USA
+Transworld Surf,USA
+Triangle Again 2,JPN
+Triangle Again,JPN
+Trigger Man,USA
+Triple Play 2002,USA
+Trivial Pursuit - Unhinged,USA
+Tron 2.0 - Killer App,GLO
+True Crime - New York City,USA-JPN
+True Crime - Streets Of La,USA-JPN
+Turok - Evolution,USA
+Ty The Tasmanian Tiger 2 - B.R,USA
+Ty The Tasmanian Tiger - N.O.T.Q,GLO
+Ty The Tasmanian Tiger,USA
+Uefa Champions League 2004-2005,PAL
+Uefa Euro 2004 - Portugal,USA
+UFC - Tapout 2,USA
+UFC - Tapout,USA
+Ultimate Beach Soccer,USA
+Ultimate Pro Pinball,PAL
+Ultimate Spider-Man,GLO
+Ultra Bust-A-Move,USA
+Umezawa Yukari No Igo Seminar,JPN
+Unreal Championship 2 - T.L.C,GLO
+Unreal Championship,USA-PAL
+Unreal II - The Awakening,USA-JPN
+Urban Chaos - Riot Response,GLO
+Urban Freestyle Soccer,PAL
+Urban Freestyle Soccer,USA
+Van Helsing,USA-JPN
+Vexx,USA
+Vietcong - Purple Haze,GLO
+Virtual Pool - Tournament Ed.,USA-PAL
+Volvo - Drive For Life,USA
+Voodoo Vince,USA
+V-Rally 3,USA-JPN
+Wakeboarding Unleashed Ft S.M,USA
+Wallace & Gromit - Project Zoo,USA-JPN
+Wallace & Gromit - T.C.O.T.W-R,USA-PAL
+Warpath,GLO
+Wcr - World Championship Rugby,PAL
+Whacked!,USA-PAL
+Whiplash,USA
+Whiteout,USA
+Winback 2 - Project Poseidon,USA
+Wings Of War,USA
+Winter X Games Snowboarding 2002,USA
+Without Warning,GLO
+World Championship Poker 2 Ft H.L,USA
+World Championship Poker,USA
+World Championship Pool 2004,USA
+World Championship Snooker 2004,PAL
+World Poker Tour,USA
+World Racing 2,GLO
+World Racing,USA
+World Series Baseball 2K3,USA
+World Series Baseball,USA
+World Series Of Poker,GLO
+World Snooker Championship 2005,PAL
+World Soccer Winning Eleven 9,USA-JPN
+World War II Combat - Iwo Jima,GLO
+World War II Combat - R.T.B,GLO
+Worms 3D,USA
+Worms 4 - Mayhem,USA
+Worms Forts - Under Siege,USA
+Wrath Unleashed,USA
+Wreckless - The Yakuza Missions,USA
+WTA Tour Tennis,USA
+Wwe Raw 2,USA
+Wwe Wrestlemania 21,USA-JPN
+Wwf Raw,USA
+Xbox Live Arcade,GLO
+Xbox Music Mixer,USA
+Xgra - Extreme G Racing Assoc,USA
+Xiaolin Showdown,USA
+XIII,GLO
+X-Men 2 - Wolverine's Revenge,USA
+X-Men Legends,GLO
+X-Men Legends II -R.O.A,GLO
+X-Men - Next Dimension,USA
+X-Men - The Official Game,GLO
+Xyanide,USA-PAL
+Yager,USA
+Yetisports Arctic Adventures,USA-PAL
+Yonenaga Kunio No Shougi Seminar,JPN
+Yourself!Fitness,USA
+Yu-Gi-Oh! The Dawn Of Destiny,USA
+Zan Kabuki,JPN
+Zapper,USA
+Zathura,USA
+Zillernet,JPN`;
+
+        const homebrewGamesData = `AbbayeX v1.0
+Abombniballx_v3
+Abuse
+After Shock Pool SX
+Aliens Vs. Predator
+BakuBakuX 1&2
+battlepongx
+Biniax 2
+BraXil 2014
+CSF2
+Descent
+Dodgin Diamond 2X_v2
+Doom
+Duke Nukem 3D
+EdgarX
+FurbyKill3D_1_2
+Gladiator
+Heretic
+Hexen
+HydraX v1.0
+KETMX_v1
+KMBXTetrisV1
+Miss DrillerX
+Odamex-0.8.1
+Out of This World
+Panzer Dragoon 1
+Quake
+Quake 2 (LE Add-Ons - No Music)
+Quake3
+Reminiscence
+Rise of the Triad
+RockbotX v1.0
+RuXia 2018
+SensitiveX
+Shadow Warrior
+SMCX
+TacticsXB
+Transport Tycoon
+Ultima VII
+VideoPokerX Final
+Wolfenstein
+xArtShot
+xBermuda 0.1.4
+Xbomberbox 2
+xDink
+xGecaBlaster2
+xHamstersEscape
+xHexen2
+xMadbomber
+xMoG
+xSKULL
+xTeeterTorture
+xUrQuan
+XWolf3d V1.2
+Zelda - Oni Link Begins`;
+
+        class XboxGameCollection {
+            constructor() {
+                this.games = [];
+                this.filteredGames = [];
+                this.currentFilters = {
+                    type: 'all',
+                    region: 'all',
+                    search: ''
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.loadGames();
+                this.setupEventListeners();
+                this.renderGames();
+                this.updateStats();
+            }
+
+            loadGames() {
+                // Parse retail games
+                const retailLines = retailGamesData.trim().split('\n');
+                const retailGames = [];
+
+                for (const line of retailLines) {
+                    if (line.trim()) {
+                        const [title, regions] = line.split(',');
+                        if (title && regions) {
+                            const regionList = regions.split('-');
+                            retailGames.push({
+                                title: title.trim(),
+                                regions: regionList.map(r => r.trim()),
+                                type: 'retail'
+                            });
+                        }
+                    }
+                }
+
+                // Parse homebrew games
+                const homebrewLines = homebrewGamesData.trim().split('\n');
+                const homebrewGames = [];
+
+                for (const line of homebrewLines) {
+                    if (line.trim()) {
+                        homebrewGames.push({
+                            title: line.trim(),
+                            regions: ['GLO'],
+                            type: 'homebrew'
+                        });
+                    }
+                }
+
+                this.games = [...retailGames, ...homebrewGames];
+                this.filteredGames = [...this.games];
+            }
+
+            setupEventListeners() {
+                document.getElementById('gameType').addEventListener('change', (e) => {
+                    this.currentFilters.type = e.target.value;
+                    this.applyFilters();
+                });
+
+                document.getElementById('regionFilter').addEventListener('change', (e) => {
+                    this.currentFilters.region = e.target.value;
+                    this.applyFilters();
+                });
+
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.currentFilters.search = e.target.value.toLowerCase();
+                    this.applyFilters();
+                });
+
+                window.addEventListener('resize', () => {
+                    this.renderGames();
+                });
+            }
+
+            applyFilters() {
+                this.filteredGames = this.games.filter(game => {
+                    if (this.currentFilters.type !== 'all' && game.type !== this.currentFilters.type) {
+                        return false;
+                    }
+                    if (this.currentFilters.region !== 'all' && !game.regions.includes(this.currentFilters.region)) {
+                        return false;
+                    }
+                    if (this.currentFilters.search && !game.title.toLowerCase().includes(this.currentFilters.search)) {
+                        return false;
+                    }
+                    return true;
+                });
+
+                this.renderGames();
+                this.updateStats();
+            }
+
+            renderGames() {
+                const container = document.getElementById('tableContainer');
+
+                if (this.filteredGames.length === 0) {
+                    container.innerHTML = '<div class="no-results">No games found matching your criteria</div>';
+                    return;
+                }
+
+                const sortedGames = [...this.filteredGames].sort((a, b) => a.title.localeCompare(b.title));
+                const isDesktop = window.innerWidth >= 1200;
+                const shouldSplit = isDesktop && sortedGames.length > 10;
+
+                if (shouldSplit) {
+                    const mid = Math.ceil(sortedGames.length / 2);
+                    const firstHalf = sortedGames.slice(0, mid);
+                    const secondHalf = sortedGames.slice(mid);
+
+                    container.innerHTML = `
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Game Title</th>
+                                        <th>Region</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${firstHalf.map(game => this.createGameRowHTML(game)).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Game Title</th>
+                                        <th>Region</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${secondHalf.map(game => this.createGameRowHTML(game)).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Game Title</th>
+                                        <th>Region</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${sortedGames.map(game => this.createGameRowHTML(game)).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+            }
+
+            createGameRowHTML(game) {
+                const regionIcons = game.regions.map(region =>
+                    `<img src="images/flags/${region.toLowerCase()}.png"
+                          alt="${region}"
+                          class="region-flag"
+                          onerror="this.style.display='none'">`
+                ).join('');
+
+                const regionText = game.regions.join(', ');
+
+                return `
+                    <tr>
+                        <td>${this.escapeHtml(game.title)}</td>
+                        <td class="region-cell">
+                            ${regionIcons}
+                            <span>${regionText}</span>
+                        </td>
+                        <td>
+                            <span class="type-badge type-${game.type}">${game.type}</span>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            updateStats() {
+                const total = this.filteredGames.length;
+                const retail = this.filteredGames.filter(g => g.type === 'retail').length;
+                const homebrew = this.filteredGames.filter(g => g.type === 'homebrew').length;
+
+                const statsText = `Showing ${total} games (${retail} retail, ${homebrew} homebrew)`;
+                document.getElementById('gameCount').textContent = statsText;
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new XboxGameCollection();
+        });
+    </script>
+</body>
+</html>
